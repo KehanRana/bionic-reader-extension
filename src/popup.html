@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bionic Bold Reader</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --accent: #e8d5a3;
+      --accent-dim: #c4aa72;
+      --text: #f0ebe0;
+      --text-muted: #888;
+      --on: #4ade80;
+      --off: #555;
+    }
+
+    body {
+      width: 280px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: #0f0f0f;
+      font-weight: 700;
+    }
+
+    .logo-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .preview {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .preview-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .preview-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    .preview-text b {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .controls {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-label {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .toggle-sublabel {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: var(--off);
+      border-radius: 13px;
+      transition: background 0.3s ease;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .toggle-switch input:checked + .slider {
+      background: var(--on);
+    }
+
+    .toggle-switch input:checked + .slider::before {
+      transform: translateX(22px);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Slider control */
+    .setting-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .setting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .setting-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .setting-value {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .range-wrap {
+      position: relative;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.15s;
+      box-shadow: 0 0 0 3px rgba(232, 213, 163, 0.15);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .range-labels span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--off);
+      margin-right: 6px;
+      transition: background 0.3s;
+    }
+
+    .status-dot.active {
+      background: var(--on);
+      box-shadow: 0 0 6px var(--on);
+    }
+
+    .status-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .disabled-overlay {
+      opacity: 0.4;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">B</div>
+      <div class="logo-text">Bionic Reader</div>
+    </div>
+    <div class="tagline">Bold-first reading aid</div>
+  </div>
+
+  <div class="preview">
+    <div class="preview-label">Preview</div>
+    <div class="preview-text" id="previewText">
+      <b>Yo</b>ur <b>br</b>ain <b>re</b>ads <b>fa</b>ster <b>wh</b>en <b>bo</b>ld <b>le</b>tters <b>gu</b>ide <b>yo</b>ur <b>ey</b>es.
+    </div>
+  </div>
+
+  <div class="controls">
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Enable on this page</div>
+        <div class="toggle-sublabel">Applies bionic formatting</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="enableToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="setting-row" id="boldSetting">
+      <div class="setting-header">
+        <span class="setting-name">Bold intensity</span>
+        <span class="setting-value" id="boldCountLabel">Auto</span>
+      </div>
+      <div class="range-wrap">
+        <input type="range" id="boldCount" min="0" max="4" step="1" value="0">
+      </div>
+      <div class="range-labels">
+        <span>Auto</span>
+        <span>1 char</span>
+        <span>2 chars</span>
+        <span>3 chars</span>
+        <span>4 chars</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="status-dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Inactive on this page</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
